@@ -12,7 +12,9 @@ int main(){
     double nota1[TAM], nota2[TAM], media[TAM];
     
     preencherNota1(nota1, TAM);
+    printf("\n");
     preencherNota2(nota2, TAM);
+    printf("\n");
     calcularMediaPeso(media, nota1, nota2, TAM);
     double mediaTurma = calcularMedia(media, TAM);
     printf("A media da turma é %.2f\n", mediaTurma);
@@ -51,7 +53,7 @@ double calcularMedia(double vetMedia[], int tam){
 void imprimirNotasEMediaAcimaMedia(double vetMedia[], double MediaTurma, int tam){
     for(int i = 0; i < tam; i += 1){
         if(vetMedia[i] > MediaTurma){
-            printf("Aluno %d acima da média: %.2f com: %2.f na média\n", i + 1, MediaTurma, vetMedia[i]);
+            printf("Aluno %d acima da média: %.2f com: %.2f na média\n", i + 1, MediaTurma, vetMedia[i]);
         }
     }
 }
