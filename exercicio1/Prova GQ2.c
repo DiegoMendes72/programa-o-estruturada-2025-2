@@ -16,6 +16,38 @@ struct Produto {
     int preco;
 };
 
+void cadastrarCategoria(struct Categoria v[], int *qtd);
+void imprimirCategorias(struct Categoria v[], int qtd);
+void cadastrarProduto(struct Produto vp[], int *qtdProdutos, struct Categoria vc[], int qtdCategorias);
+void imprimirProdutos(struct Produto vp[], int qtdProdutos, struct Categoria vc[], int qtdCategorias);
+void selectionSortPorDescricao(struct Produto v[], int qtd);
+void buscaBinariaPorDescricao(struct Produto v[], int qtd, char *x);
+
+int main() {
+    struct Categoria categorias[TAM];
+    struct Produto produtos[TAM];
+
+    int qtdCategorias = 0;
+    int qtdProdutos = 0;
+
+    cadastrarCategoria(categorias, &qtdCategorias);
+    imprimirCategorias(categorias, qtdCategorias);
+
+    cadastrarProduto(produtos, &qtdProdutos, categorias, qtdCategorias);
+    imprimirProdutos(produtos, qtdProdutos, categorias, qtdCategorias);
+
+    printf("\nOrdenando produtos por descricao...\n");
+    selectionSortPorDescricao(produtos, qtdProdutos);
+    imprimirProdutos(produtos, qtdProdutos, categorias, qtdCategorias);
+
+    char busca[256];
+    printf("\nDigite a descricao do produto para buscar: ");
+    scanf(" %[^\n]", busca);
+    buscaBinariaPorDescricao(produtos, qtdProdutos, busca);
+
+    return 0;
+}
+
 void cadastrarCategoria(struct Categoria v[], int *qtd) {
     if (*qtd >= TAM) {
         printf("Nao ha espaco para cadastrar mais categorias.\n");
@@ -49,6 +81,47 @@ void imprimirCategorias(struct Categoria v[], int qtd) {
     }
 }
 
+void cadastrarProduto(struct Produto vp[], int *qtdProdutos, struct Categoria vc[], int qtdCategorias) {
+    if (*qtdProdutos >= TAM) {
+        printf("Nao ha espaco para cadastrar mais produtos.\n");
+        return;
+    }
+
+    int codigoCategoria;
+    printf("Digite o codigo do produto: ");
+    scanf("%d", &vp[*qtdProdutos].codigo);
+
+    printf("Digite o titulo do produto: ");
+    scanf(" %[^\n]", vp[*qtdProdutos].titulo);
+
+    printf("Digite a descricao do produto: ");
+    scanf(" %[^\n]", vp[*qtdProdutos].descricao);
+
+    printf("Digite o codigo da categoria: ");
+    scanf("%d", &codigoCategoria);
+
+    int encontrou = 0;
+    int i;
+    for (i = 0; i < qtdCategorias; i += 1) {
+        if (vc[i].codigo == codigoCategoria) {
+            encontrou = 1;
+            break;
+        }
+    }
+
+    if (!encontrou) {
+        printf("Categoria nao encontrada. Produto nao cadastrado.\n");
+        return;
+    }
+
+    vp[*qtdProdutos].categoria = codigoCategoria;
+
+    printf("Digite o preco do produto em centavos (ex: 1999 = R$19.99): ");
+    scanf("%d", &vp[*qtdProdutos].preco);
+
+    *qtdProdutos += 1;
+}
+
 void imprimirProdutos(struct Produto vp[], int qtdProdutos,
                       struct Categoria vc[], int qtdCategorias) {
 
@@ -77,13 +150,11 @@ void selectionSortPorDescricao(struct Produto v[], int qtd) {
     int i, j, min;
     for (i = 0; i < qtd - 1; i += 1) {
         min = i;
-
         for (j = i + 1; j < qtd; j += 1) {
             if (strcmp(v[j].descricao, v[min].descricao) < 0) {
                 min = j;
             }
         }
-
         if (min != i) {
             struct Produto temp = v[i];
             v[i] = v[min];
@@ -116,17 +187,4 @@ void buscaBinariaPorDescricao(struct Produto v[], int qtd, char *x) {
     }
 
     printf("Produto nao encontrado.\n");
-}
-
-int main() {
-    struct Categoria categorias[TAM];
-    struct Produto produtos[TAM];
-
-    int qtdCategorias = 0;
-    int qtdProdutos = 0;
-
-    cadastrarCategoria(categorias, &qtdCategorias);
-    imprimirCategorias(categorias, qtdCategorias);
-
-    return 0;
 }
